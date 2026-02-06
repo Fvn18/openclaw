@@ -1,0 +1,81 @@
+{
+  // Local config template for Feishu + MiniMax/DeepSeek failover.
+  // Copy to ~/.openclaw/openclaw.json and replace placeholder values.
+  env: {
+    MINIMAX_API_KEY: "sk-REPLACE_ME",
+    MINIMAX_API_BASE: "https://api.minimaxi.com/anthropic",
+    DEEPSEEK_API_KEY: "sk-REPLACE_ME",
+    DEEPSEEK_API_BASE: "https://api.deepseek.com/v1",
+  },
+  agents: {
+    defaults: {
+      workspace: "~/.openclaw/workspace",
+      model: {
+        primary: "minimax/MiniMax-M2.1",
+        fallbacks: ["deepseek/DEEPSEEK_MODEL_ID"],
+      },
+      models: {
+        "minimax/MiniMax-M2.1": { alias: "MiniMax M2.1" },
+        "deepseek/DEEPSEEK_MODEL_ID": { alias: "DeepSeek" },
+      },
+    },
+  },
+  models: {
+    mode: "merge",
+    providers: {
+      minimax: {
+        baseUrl: "${MINIMAX_API_BASE}",
+        apiKey: "${MINIMAX_API_KEY}",
+        api: "anthropic-messages",
+        models: [
+          {
+            id: "MiniMax-M2.1",
+            name: "MiniMax M2.1",
+            reasoning: false,
+            input: ["text"],
+            cost: { input: 15, output: 60, cacheRead: 2, cacheWrite: 10 },
+            contextWindow: 200000,
+            maxTokens: 8192,
+          },
+        ],
+      },
+      deepseek: {
+        baseUrl: "${DEEPSEEK_API_BASE}",
+        apiKey: "${DEEPSEEK_API_KEY}",
+        api: "openai-completions",
+        models: [
+          {
+            id: "DEEPSEEK_MODEL_ID",
+            name: "DeepSeek",
+            reasoning: false,
+            input: ["text"],
+            contextWindow: 128000,
+            maxTokens: 8192,
+          },
+        ],
+      },
+    },
+  },
+  skills: {
+    load: { watch: true, watchDebounceMs: 250 },
+  },
+  plugins: {
+    entries: {
+      feishu: { enabled: true },
+    },
+  },
+  channels: {
+    feishu: {
+      enabled: true,
+      dmPolicy: "pairing",
+      accounts: {
+        main: {
+          appId: "cli_xxx",
+          appSecret: "xxx",
+          botName: "Moltbot",
+        },
+      },
+    },
+    telegram: { enabled: false },
+  },
+}
