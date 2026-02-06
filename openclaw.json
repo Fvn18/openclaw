@@ -1,0 +1,217 @@
+{
+  "//": "OpenClaw 配置文件 - MINIMAX + Deepseek 自动切换配置",
+  "env": {
+    "//": "API Keys - 请替换为实际的API密钥",
+    "MINIMAX_API_KEY": "sk-api-wOqtTgOvpSAKMQEz7eoFR_7_xLhVfC7NvhaZnLUh0u_qOsXAU9SrLq21m2y2XGq1sviSMcTcalk1IYPHYTlYHfgDgVEcL9VPub1aYaOazGt7I5cn85YQND4",
+    "DEEPSEEK_API_KEY": "sk-2dd2d7bf0b304328a7ee69970998e2d2"
+  },
+  "agents": {
+    "defaults": {
+      "models": {
+        "minimax/MiniMax-M2.1": {
+          "alias": "minimax",
+          "streaming": true
+        },
+        "deepseek/deepseek-chat": {
+          "alias": "deepseek",
+          "streaming": true
+        },
+        "deepseek/deepseek-coder": {
+          "alias": "deepseek-coder",
+          "streaming": true
+        }
+      },
+      "model": {
+        "primary": "minimax/MiniMax-M2.1",
+        "fallbacks": ["deepseek/deepseek-chat", "deepseek/deepseek-coder"]
+      },
+      "imageModel": {
+        "primary": "minimax/MiniMax-VL-01",
+        "fallbacks": ["deepseek/deepseek-chat"]
+      },
+      "workspace": "~/openclaw-workspace",
+      "timeoutSeconds": 300,
+      "thinkingDefault": "medium",
+      "verboseDefault": "on",
+      "humanDelay": {
+        "mode": "off"
+      }
+    }
+  },
+  "models": {
+    "mode": "merge",
+    "router": {
+      "enabled": true,
+      "primary": "minimax",
+      "fallback": "deepseek",
+      "checkIntervalMs": 60000,
+      "maxBackoffMs": 300000,
+      "quotaThreshold": 95
+    },
+    "providers": {
+      "minimax": {
+        "baseUrl": "https://api.minimaxi.com/v1",
+        "apiKey": "${MINIMAX_API_KEY}",
+        "api": "openai-completions",
+        "models": [
+          {
+            "id": "MiniMax-M2.1",
+            "name": "MiniMax M2.1",
+            "reasoning": false,
+            "input": ["text"],
+            "cost": {
+              "input": 15,
+              "output": 60,
+              "cacheRead": 2,
+              "cacheWrite": 10
+            },
+            "contextWindow": 200000,
+            "maxTokens": 8192
+          },
+          {
+            "id": "MiniMax-VL-01",
+            "name": "MiniMax VL 01",
+            "reasoning": false,
+            "input": ["text", "image"],
+            "cost": {
+              "input": 15,
+              "output": 60,
+              "cacheRead": 2,
+              "cacheWrite": 10
+            },
+            "contextWindow": 200000,
+            "maxTokens": 8192
+          },
+          {
+            "id": "MiniMax-M2.1-lightning",
+            "name": "MiniMax M2.1 Lightning",
+            "reasoning": false,
+            "input": ["text"],
+            "cost": {
+              "input": 15,
+              "output": 80,
+              "cacheRead": 2,
+              "cacheWrite": 10
+            },
+            "contextWindow": 200000,
+            "maxTokens": 8192
+          }
+        ]
+      },
+      "deepseek": {
+        "baseUrl": "https://api.deepseek.com/v1",
+        "apiKey": "${DEEPSEEK_API_KEY}",
+        "api": "openai-completions",
+        "models": [
+          {
+            "id": "deepseek-chat",
+            "name": "DeepSeek Chat",
+            "reasoning": false,
+            "input": ["text"],
+            "cost": {
+              "input": 2,
+              "output": 8,
+              "cacheRead": 0.5,
+              "cacheWrite": 2
+            },
+            "contextWindow": 64000,
+            "maxTokens": 8192
+          },
+          {
+            "id": "deepseek-coder",
+            "name": "DeepSeek Coder",
+            "reasoning": true,
+            "input": ["text"],
+            "cost": {
+              "input": 2,
+              "output": 8,
+              "cacheRead": 0.5,
+              "cacheWrite": 2
+            },
+            "contextWindow": 64000,
+            "maxTokens": 8192
+          },
+          {
+            "id": "deepseek-reasoner",
+            "name": "DeepSeek Reasoner",
+            "reasoning": true,
+            "input": ["text"],
+            "cost": {
+              "input": 4,
+              "output": 16,
+              "cacheRead": 1,
+              "cacheWrite": 4
+            },
+            "contextWindow": 64000,
+            "maxTokens": 8192
+          }
+        ]
+      }
+    }
+  },
+  "tools": {
+    "media": {
+      "image": {
+        "enabled": true,
+        "maxBytes": 10485760,
+        "maxChars": 50000,
+        "timeoutSeconds": 60,
+        "models": ["minimax/MiniMax-VL-01", "deepseek/deepseek-chat"]
+      }
+    },
+    "web": {
+      "search": {
+        "enabled": true,
+        "maxResults": 10,
+        "timeoutSeconds": 30
+      },
+      "fetch": {
+        "enabled": true,
+        "maxChars": 50000,
+        "timeoutSeconds": 30
+      }
+    },
+    "exec": {
+      "applyPatch": {
+        "enabled": true
+      },
+      "host": "local",
+      "security": "prompt"
+    }
+  },
+  "gateway": {
+    "enabled": true,
+    "http": {
+      "port": 8080,
+      "endpoints": {
+        "chatCompletions": {
+          "enabled": true
+        }
+      }
+    },
+    "controlUi": {
+      "enabled": true,
+      "basePath": "/"
+    }
+  },
+  "skills": {
+    "load": {
+      "watch": true,
+      "watchDebounceMs": 1000
+    }
+  },
+  "logging": {
+    "level": "info",
+    "pretty": true
+  },
+  "auth": {
+    "cooldowns": {
+      "billingBackoffHours": 1,
+      "billingBackoffHoursByProvider": {
+        "minimax": 0.5
+      },
+      "billingMaxHours": 24,
+      "failureWindowHours": 1
+    }
+  }
+}

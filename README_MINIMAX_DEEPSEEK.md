@@ -1,42 +1,18 @@
 # OpenClaw - MINIMAX + Deepseek 自动切换配置
 
-## 🦞 项目概述
+## 🎯 功能特性
 
-这是一个配置好的 OpenClaw 项目，专注于 MINIMAX 和 Deepseek 模型的自动切换功能。移除了所有非必要的组件，保留了核心的模型切换逻辑。
-
-## ✨ 功能特性
-
-- **智能模型切换**: MINIMAX 限额后自动切换到 Deepseek，恢复后自动切回
-- **国内API支持**: 使用国内API接口，访问更稳定
+- **主模型**: MiniMax M2.1 (国内API)
+- **备用模型**: Deepseek Chat/Coder (国内API)
+- **智能切换**: MINIMAX限额自动切换到Deepseek，恢复后自动切回
 - **实时监控**: 每60秒检测一次模型状态
-- **指数退避**: 动态调整检测间隔，最大5分钟
-- **简洁配置**: 移除飞书等非必要集成，专注于核心功能
+- **指数退避**: 动态调整检测间隔（最大5分钟）
 
 ## 🚀 快速开始
 
-### 1. 克隆项目
+### 1. 配置 API 密钥
 
-```bash
-git clone https://github.com/Fvn18/openclaw.git
-cd openclaw
-```
-
-### 2. 安装依赖
-
-```bash
-pnpm install
-pnpm build
-```
-
-### 3. 配置API密钥
-
-复制环境变量示例文件：
-
-```bash
-cp .env.example .env
-```
-
-编辑 `.env` 文件，填入你的API密钥：
+编辑 `.env` 文件：
 
 ```bash
 # MiniMax API 密钥
@@ -46,13 +22,18 @@ MINIMAX_API_KEY=your-minimax-api-key-here
 DEEPSEEK_API_KEY=your-deepseek-api-key-here
 ```
 
-### 4. 启动服务
+### 2. 获取 API 密钥
+
+- **MiniMax**: https://platform.minimax.io/
+- **Deepseek**: https://platform.deepseek.com/
+
+### 3. 启动服务
 
 ```bash
-# 启动网关服务
+# 启动网关
 pnpm start gateway
 
-# 或使用TUI界面
+# 或使用 TUI 界面
 pnpm start tui
 ```
 
@@ -83,20 +64,13 @@ pnpm start tui
 4. **恢复检测**: 指数退避检测 MiniMax 恢复状态
 5. **自动恢复**: MiniMax 恢复后自动切回主模型
 
-## 📋 可用模型
-
-| 模型          | 提供商   | 上下文窗口 | 成本 (输入/输出) | 状态      |
-| ------------- | -------- | ---------- | ---------------- | --------- |
-| MiniMax M2.1  | minimaxi | 195k       | 15/60            | ✅ 已配置 |
-| Deepseek Chat | deepseek | 64k        | 2/8              | ✅ 已配置 |
-
-## 🔧 常用命令
+## 📝 常用命令
 
 ```bash
 # 查看模型列表
 pnpm start models list
 
-# 切换模型
+# 切换主模型
 pnpm start models set minimax/MiniMax-M2.1
 pnpm start models set deepseek/deepseek-chat
 
@@ -109,29 +83,6 @@ pnpm start logs -f
 # 配置向导
 pnpm start configure
 ```
-
-## 🛠️ 高级配置
-
-### 自定义切换参数
-
-编辑 `openclaw.json`：
-
-```json
-{
-  "models": {
-    "router": {
-      "checkIntervalMs": 30000, // 检测间隔（毫秒）
-      "maxBackoffMs": 600000, // 最大退避时间
-      "quotaThreshold": 90 // 限额阈值（%）
-    }
-  }
-}
-```
-
-### 获取API密钥
-
-- **MiniMax**: https://platform.minimax.io/
-- **Deepseek**: https://platform.deepseek.com/
 
 ## 🔍 监控与调试
 
@@ -153,10 +104,44 @@ pnpm start models list
 └── agent.log        # 代理日志
 ```
 
+## 🛠️ 高级配置
+
+### 自定义切换参数
+
+编辑 `openclaw.json`：
+
+```json
+{
+  "models": {
+    "router": {
+      "checkIntervalMs": 30000, // 检测间隔（毫秒）
+      "maxBackoffMs": 600000, // 最大退避时间
+      "quotaThreshold": 90 // 限额阈值（%）
+    }
+  }
+}
+```
+
+### 模型参数
+
+```json
+{
+  "agents": {
+    "defaults": {
+      "timeoutSeconds": 300, // 请求超时
+      "thinkingDefault": "medium", // 思考级别
+      "humanDelay": {
+        "mode": "off" // 人工延迟
+      }
+    }
+  }
+}
+```
+
 ## 🔒 安全建议
 
-1. **保护API密钥**: 不要提交 `.env` 文件到Git
-2. **定期轮换**: 定期更新API密钥
+1. **保护 API 密钥**: 不要提交 `.env` 文件到 Git
+2. **定期轮换**: 定期更新 API 密钥
 3. **监控使用**: 关注模型使用量，避免突发费用
 
 ## 🐛 故障排除
@@ -164,14 +149,20 @@ pnpm start models list
 ### 模型切换不工作
 
 1. 检查配置是否正确加载
-2. 确认API密钥有效
+2. 确认 API 密钥有效
 3. 查看网关日志中的切换信息
 
-### API调用失败
+### API 调用失败
 
 1. 检查网络连接
-2. 验证API密钥权限
+2. 验证 API 密钥权限
 3. 查看具体的错误信息
+
+### 性能问题
+
+1. 调整检测间隔时间
+2. 优化模型参数
+3. 监控资源使用情况
 
 ## 📚 相关链接
 
@@ -181,4 +172,4 @@ pnpm start models list
 
 ---
 
-**注意**: 本项目专注于 MINIMAX 和 Deepseek 的模型自动切换功能，已移除飞书等非必要集成。
+**注意**: 本项目已移除飞书集成，专注于 MINIMAX 和 Deepseek 的模型自动切换功能。

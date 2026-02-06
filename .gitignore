@@ -1,77 +1,160 @@
-node_modules
-**/node_modules/
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+build/
+*.tsbuildinfo
+
+# Environment
 .env
-docker-compose.extra.yml
-dist
-*.bun-build
-pnpm-lock.yaml
-bun.lock
-bun.lockb
-coverage
-.pnpm-store
-.worktrees/
+.env.local
+.env.*.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime
+.pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage
+coverage/
+.nyc_output/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
 .DS_Store
-**/.DS_Store
-ui/src/ui/__screenshots__/
-ui/playwright-report/
-ui/test-results/
+Thumbs.db
 
-# Bun build artifacts
-*.bun-build
-apps/macos/.build/
-apps/shared/MoltbotKit/.build/
-**/ModuleCache/
+# Temporary
+tmp/
+temp/
+*.tmp
+
+# Package lock files (use pnpm)
+package-lock.json
+yarn.lock
+
+# Config cache
+.openclaw/
+
+# Build artifacts
+*.tar.gz
+*.zip
+
+# Database
+*.db
+*.sqlite
+
+# Certificates
+*.pem
+*.key
+*.crt
+
+# Docker
+.dockerignore
+
+# Git hooks
+.git/hooks/
+
+# TypeScript
+*.d.ts.map
+
+# Bundle analysis
+bundle-report.html
+
+# Test results
+test-results/
+junit.xml
+
+# Playwright
+playwright-report/
+test-results/
+
+# Sentry
+.sentryclirc
+
+# Local development
+local/
+development/
+
+# Backup files
+*.backup
+*.bak
+
+# Lock files
+*.lock
+
+# Cache
+.cache/
+.parcel-cache/
+.next/
+
+# Storybook
+storybook-static/
+
+# Generated files
+generated/
+
+# Protocol buffers
+*.pb.go
+
+# Rust
+target/
+Cargo.lock
+
+# Swift
+*.xcodeproj/
+*.xcworkspace/
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Android
+*.apk
+*.ap_
+*.dex
+*.class
 bin/
-bin/clawdbot-mac
-bin/docs-list
-apps/macos/.build-local/
-apps/macos/.swiftpm/
-apps/shared/MoltbotKit/.swiftpm/
-Core/
-apps/ios/*.xcodeproj/
-apps/ios/*.xcworkspace/
-apps/ios/.swiftpm/
-vendor/
-apps/ios/Clawdbot.xcodeproj/
-apps/ios/Clawdbot.xcodeproj/**
-apps/macos/.build/**
-**/*.bun-build
-apps/ios/*.xcfilelist
+gen/
+out/
+proguard/
 
-# Vendor build artifacts
-vendor/a2ui/renderers/lit/dist/
-src/canvas-host/a2ui/*.bundle.js
-src/canvas-host/a2ui/*.map
-.bundle.hash
+# iOS
+*.ipa
+*.dSYM.zip
+*.dSYM
 
-# fastlane (iOS)
-apps/ios/fastlane/README.md
-apps/ios/fastlane/report.xml
-apps/ios/fastlane/Preview.html
-apps/ios/fastlane/screenshots/
-apps/ios/fastlane/test_output/
-apps/ios/fastlane/logs/
-apps/ios/fastlane/.env
-apps/ios/fastlane/report.xml
+# Unity
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
 
-# fastlane build artifacts (local)
-apps/ios/*.ipa
-apps/ios/*.dSYM.zip
+# Unreal
+Binaries/
+Build/
+DerivedDataCache/
+Intermediate/
+Saved/
 
-# provisioning profiles (local)
-apps/ios/*.mobileprovision
-.env
-
-# Local untracked files
-.local/
-IDENTITY.md
-USER.md
-.tgz
-
-# local tooling
-.serena/
-
-# Agent credentials and memory (NEVER COMMIT)
-memory/
-.agent/*.json
-!.agent/workflows/
+# Custom
+# Add your custom ignore patterns here

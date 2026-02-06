@@ -52,8 +52,18 @@ export type BedrockDiscoveryConfig = {
   defaultMaxTokens?: number;
 };
 
+export type ModelRouterConfig = {
+  enabled?: boolean;
+  primary?: string;
+  fallback?: string;
+  checkIntervalMs?: number;
+  maxBackoffMs?: number;
+  quotaThreshold?: number;
+};
+
 export type ModelsConfig = {
   mode?: "merge" | "replace";
   providers?: Record<string, ModelProviderConfig>;
   bedrockDiscovery?: BedrockDiscoveryConfig;
+  router?: ModelRouterConfig;
 };
