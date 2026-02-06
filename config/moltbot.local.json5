@@ -1,22 +1,26 @@
 {
   // Local config template for Feishu + MiniMax/DeepSeek failover.
-  // Copy to ~/.openclaw/openclaw.json and replace placeholder values.
-  env: {
-    MINIMAX_API_KEY: "sk-REPLACE_ME",
-    MINIMAX_API_BASE: "https://api.minimaxi.com/anthropic",
-    DEEPSEEK_API_KEY: "sk-REPLACE_ME",
-    DEEPSEEK_API_BASE: "https://api.deepseek.com/v1",
-  },
+  // Copy to ~/.openclaw/openclaw.json and set env vars in ~/.openclaw/.env.
+  //
+  // Required env vars:
+  // FEISHU_APP_ID=cli_xxx
+  // FEISHU_APP_SECRET=xxx
+  // FEISHU_VERIFICATION_TOKEN=xxx
+  // MINIMAX_API_KEY=sk-...
+  // MINIMAX_API_BASE=https://api.minimaxi.com/anthropic
+  // DEEPSEEK_API_KEY=sk-...
+  // DEEPSEEK_API_BASE=https://api.deepseek.com/v1
+  // DEEPSEEK_MODEL_ID=deepseek-chat
   agents: {
     defaults: {
       workspace: "~/.openclaw/workspace",
       model: {
         primary: "minimax/MiniMax-M2.1",
-        fallbacks: ["deepseek/DEEPSEEK_MODEL_ID"],
+        fallbacks: ["deepseek/${DEEPSEEK_MODEL_ID}"],
       },
       models: {
         "minimax/MiniMax-M2.1": { alias: "MiniMax M2.1" },
-        "deepseek/DEEPSEEK_MODEL_ID": { alias: "DeepSeek" },
+        "deepseek/${DEEPSEEK_MODEL_ID}": { alias: "DeepSeek" },
       },
     },
   },
@@ -45,7 +49,7 @@
         api: "openai-completions",
         models: [
           {
-            id: "DEEPSEEK_MODEL_ID",
+            id: "${DEEPSEEK_MODEL_ID}",
             name: "DeepSeek",
             reasoning: false,
             input: ["text"],
@@ -70,8 +74,10 @@
       dmPolicy: "pairing",
       accounts: {
         main: {
-          appId: "cli_xxx",
-          appSecret: "xxx",
+          appId: "${FEISHU_APP_ID}",
+          appSecret: "${FEISHU_APP_SECRET}",
+          verificationToken: "${FEISHU_VERIFICATION_TOKEN}",
+          connectionMode: "websocket",
           botName: "Moltbot",
         },
       },
